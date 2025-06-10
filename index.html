@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rohit Nagareddy - AI Engineering Dossier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Midnight & Gold -->
+    <!-- Application Structure Plan: A single-page, narrative-driven 'interactive dossier' designed to guide the user through a compelling story of expertise and impact. It abandons the traditional tabbed structure for a more cinematic, top-down flow. The architecture is: 1) Hero Section with a dynamic title. 2) Core Philosophy section to set the tone. 3) An interactive 'Nexus' diagram visualizing the interplay of core skills, making expertise tangible. 4) The 'Impact Showcase' using a horizontal scroll for projects, each featuring advanced, context-specific charts (radar, bar) instead of simple donuts. 5) A redesigned 'Career Arc' timeline. This structure was chosen to feel like a high-end presentation, emphasizing storytelling and visual 'wow' factor to engage and impress senior-level interviewers. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Key Project Results. Goal: Compare & Demonstrate multi-faceted impact. Viz: Radar Chart (Chart.js) for multi-metric projects, animated Bar Chart for before/after comparisons. Interaction: Charts animate on scroll into view. Justification: More sophisticated than simple percentages, showing a deeper understanding of project success factors.
+        - Report Info: Core Competencies. Goal: Organize & show relationships. Viz: Custom HTML/CSS/JS 'Nexus' diagram. Interaction: Hovering over a node highlights connections and reveals associated tools in a tooltip. Justification: An innovative and engaging way to present skills that is far more memorable than a list.
+        - Report Info: Experience. Goal: Illustrate career progression. Viz: Enhanced vertical timeline with icons. Interaction: Scroll-triggered fade-in animations. Justification: Creates a more elegant and professional narrative of the career path.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .glass-pane {
+            background: rgba(22, 27, 34, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(48, 54, 61, 0.5);
+        }
+        .section-title {
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+        }
+        .scroll-target {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-target.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nexus-node {
+            transition: all 0.3s ease;
+        }
+        .nexus-node:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.7));
+        }
+        .nexus-line {
+            transition: all 0.3s ease;
+        }
+        .group:hover .nexus-line {
+            background-color: #FBBF24 !important;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            max-width: 450px;
+            margin: auto;
+        }
+        .project-card {
+            background: linear-gradient(145deg, rgba(30,36,44,0.7), rgba(22,27,34,0.7));
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-6xl">
+
+        <!-- Hero Section -->
+        <header class="text-center py-20 my-12 scroll-target">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white">Rohit Nagareddy</h1>
+            <p class="text-2xl md:text-3xl text-amber-400 font-semibold mt-4 tracking-wide">Architecting the Future of AI</p>
+            <div class="mt-8 flex justify-center items-center flex-wrap gap-x-6 gap-y-2 text-gray-400">
+                <a href="mailto:rohiteddynagareddy@gmail.com" class="hover:text-amber-400 transition">Email</a>
+                <span>&bull;</span>
+                <a href="http://linkedin.com/in/rohitnagareddy" target="_blank" class="hover:text-amber-400 transition">LinkedIn</a>
+                <span>&bull;</span>
+                <a href="https://github.com/rohitreddynagareddy" target="_blank" class="hover:text-amber-400 transition">GitHub</a>
+                <span>&bull;</span>
+                <a href="https://huggingface.co/rohitnagareddy" target="_blank" class="hover:text-amber-400 transition">Hugging Face</a>
+                <span>&bull;</span>
+                <a href="https://rohitreddynagareddy.github.io/Personal-Site/" target="_blank" class="hover:text-amber-400 transition">Personal Site</a>
+            </div>
+        </header>
+        
+        <!-- Core Philosophy -->
+        <section class="my-24 scroll-target">
+             <div class="glass-pane p-8 md:p-12 rounded-2xl text-center">
+                 <p class="text-xl md:text-2xl text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                    "I transform complex business challenges into intelligent, autonomous systems. My focus is on engineering robust AI solutions—from advanced LLMs to multi-agent frameworks—that not only solve problems but create tangible, strategic value."
+                 </p>
+             </div>
+        </section>
+
+        <!-- The Nexus -->
+        <section class="my-24 scroll-target">
+            <h2 class="text-4xl font-bold text-center mb-16 text-amber-400 section-title">Core Competencies</h2>
+            <div id="nexus-diagram" class="relative w-full max-w-3xl mx-auto h-96 flex items-center justify-center">
+                 <div data-skill='{"title": "LLM & Transformer Architecture", "tools": "Fine-Tuning, Metaprompts, PyTorch, TensorFlow"}' class="nexus-node absolute top-0 left-1/2 -translate-x-1/2 cursor-pointer glass-pane p-4 rounded-full text-center w-40 h-40 flex items-center justify-center"><span class="text-white font-semibold">LLM Mastery</span></div>
+                 <div data-skill='{"title": "Agentic AI Systems", "tools": "AutoGen, Crew AI, LangGraph"}' class="nexus-node absolute bottom-0 left-1/4 -translate-x-1/2 cursor-pointer glass-pane p-4 rounded-full text-center w-40 h-40 flex items-center justify-center"><span class="text-white font-semibold">Agentic AI</span></div>
+                 <div data-skill='{"title": "Multi-Cloud AI Platforms", "tools": "Azure AI, AWS Bedrock, Vertex AI"}' class="nexus-node absolute bottom-0 right-1/4 translate-x-1/2 cursor-pointer glass-pane p-4 rounded-full text-center w-40 h-40 flex items-center justify-center"><span class="text-white font-semibold">AI Platforms</span></div>
+                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-amber-400 text-gray-900 rounded-full w-48 h-48 flex items-center justify-center text-center font-bold text-xl p-4"><span>AI Engineering & DevOps</span></div>
+            </div>
+            <div id="nexus-tooltip" class="absolute bg-gray-900 border border-amber-400 p-4 rounded-lg shadow-2xl opacity-0 transition-opacity pointer-events-none text-center z-10"></div>
+        </section>
+        
+        <!-- Impact Showcase -->
+        <section class="my-24">
+            <h2 class="text-4xl font-bold text-center mb-16 text-amber-400 section-title">Impact Showcase</h2>
+            <div id="projects-container" class="space-y-20">
+                <!-- Projects will be injected here -->
+            </div>
+        </section>
+        
+        <!-- Career Arc -->
+        <section class="my-24 scroll-target">
+            <h2 class="text-4xl font-bold text-center mb-16 text-amber-400 section-title">Career Arc</h2>
+            <div id="experience-container" class="relative border-l-2 border-gray-700">
+                 <!-- Experience timeline will be injected here -->
+            </div>
+        </section>
+
+        <!-- Certifications -->
+        <section class="my-24 scroll-target">
+             <h2 class="text-4xl font-bold text-center mb-12 text-amber-400 section-title">Credentials</h2>
+             <div id="certs-container" class="flex flex-wrap justify-center gap-4">
+                 <!-- Certs will be injected here -->
+             </div>
+        </section>
+
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const projectsData = [
+        {
+            title: "Intelligent Network Optimization for QOS & NPM",
+            description: "Developed a sophisticated AI platform to provide real-time analytics and automated optimizations for a major telecom operator, moving them from a reactive to a predictive operational model.",
+            chartType: 'radar',
+            metrics: [
+                { label: 'Performance', value: 35 },
+                { label: 'Issue Reduction', value: 20 },
+                { label: 'Efficiency', value: 25 },
+                { label: 'Scalability', value: 30 },
+            ],
+            tech: ["LangGraph", "Azure DevOps", "Python", "Machine Learning"]
+        },
+        {
+            title: "Proactive Quality Assurance for 5G Networks",
+            description: "Engineered an intelligent monitoring system that continuously analyzed network data to predict and prevent service quality issues before they could impact customers.",
+            chartType: 'bar',
+            metrics: [
+                { label: 'Before', value: 100 },
+                { label: 'After', value: 50 },
+            ],
+            metricLabel: 'Service Quality Incidents',
+            result: '50% Reduction',
+            tech: ["Machine Learning", "Python", "Real-time Analytics"]
+        },
+        {
+            title: "Predictive Resource Allocation for FirstNet",
+            description: "Led a team to build and integrate an advanced predictive model to ensure uninterrupted critical communications for first responders by dynamically allocating network resources.",
+            chartType: 'gauge',
+            metric: 40,
+            metricLabel: 'Network Reliability Improvement',
+            tech: ["Predictive Modeling", "Python", "System Integration"]
+        }
+    ];
+
+    const experienceData = [
+        { 
+            company: "AT&T", 
+            role: "Specialist", 
+            date: "October 2024 - Present",
+            description: [
+                "Spearheaded the architecture of sophisticated agentic AI workflows using LangGraph and AutoGen to automate high-stakes telecom operations.",
+                "Directed the end-to-end LLM customization process, performing intricate dataset engineering to curate proprietary training data and fine-tuning foundational models for hyper-specialized telecom domains.",
+                "Engineered and deployed advanced metaprompting frameworks, creating dynamic instructional systems that guarantee model outputs are consistently aligned with complex business logic and performance KPIs."
+            ]
+        },
+        { 
+            company: "Accenture", 
+            role: "Consultant", 
+            date: "November 2021 - October 2024",
+            description: [
+                "Led AI-driven telecom projects, leveraging agentic AI frameworks to significantly improve QoS, NPM, and FirstNet optimizations.",
+                "Built and managed CI/CD pipelines with Azure DevOps and Terraform, creating a robust infrastructure for key telecom solutions.",
+                "Pioneered Site Reliability Engineering (SRE) practices using Azure Monitor and LangWatch, delivering real-time insights into network performance."
+            ]
+        },
+        { 
+            company: "Societe Generale", 
+            role: "Specialist Software Engineer", 
+            date: "December 2014 - October 2021",
+            description: [
+                "Managed the stability and performance of critical production environments, directly overseeing Kubernetes resource management.",
+                "Developed and maintained Grafana dashboards for real-time monitoring and observability of system health.",
+                "Managed server infrastructure and automated key operational tasks."
+            ]
+        },
+        { 
+            company: "Fidelity Investments", 
+            role: "Release Engineer", 
+            date: "August 2013 - December 2014" 
+        },
+        { 
+            company: "HCL Technologies", 
+            role: "Release Engineer", 
+            date: "September 2010 - August 2013" 
+        }
+    ];
+
+    const certifications = [
+            { name: "Microsoft Certified: AI Engineer", url: "https://learn.microsoft.com/en-us/users/nagareddyrohit-6759/credentials/6eaad94e46c0ac3b?ref=https%3A%2F%2Fwww.linkedin.com%2F" },
+            { name: "Microsoft Certified: Azure DevOps Engineer Expert" },
+            { name: "Microsoft Certified: Azure Solutions Architect Expert" },
+            { name: "AWS Certified DevOps Engineer Professional" },
+            { name: "Microsoft Certified Trainer 2022-2023" }
+    ];
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                if (entry.target.querySelector('canvas')) {
+                    const chartId = entry.target.querySelector('canvas').id;
+                    const project = projectsData.find(p => `chart-${p.title.replace(/\s/g, '-')}` === chartId);
+                    if (project) renderChart(chartId, project);
+                }
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.scroll-target').forEach(el => observer.observe(el));
+    
+    const projectsContainer = document.getElementById('projects-container');
+    projectsData.forEach((project, index) => {
+        const projectEl = document.createElement('div');
+        projectEl.className = 'scroll-target grid md:grid-cols-2 gap-8 md:gap-12 items-center';
+        const chartId = `chart-${project.title.replace(/\s/g, '-')}`;
+        
+        const textContent = `
+            <div class="space-y-4 ${index % 2 === 1 ? 'md:order-2' : ''}">
+                <h3 class="text-3xl font-bold text-white">${project.title}</h3>
+                <p class="text-lg text-gray-400">${project.description}</p>
+                <div class="flex flex-wrap gap-2 pt-2">
+                    ${project.tech.map(t => `<span class="bg-gray-700 text-amber-400 text-sm font-medium px-3 py-1 rounded-full">${t}</span>`).join('')}
+                </div>
+            </div>
+        `;
+        
+        const chartContent = `
+            <div class="glass-pane rounded-2xl p-6 ${index % 2 === 1 ? 'md:order-1' : ''}">
+                <div class="chart-container">
+                    <canvas id="${chartId}"></canvas>
+                </div>
+            </div>
+        `;
+
+        projectEl.innerHTML = textContent + chartContent;
+        projectsContainer.appendChild(projectEl);
+        observer.observe(projectEl);
+    });
+
+    const experienceContainer = document.getElementById('experience-container');
+    experienceData.forEach(exp => {
+        const item = document.createElement('div');
+        item.className = 'relative mb-10 scroll-target pl-8'; // Added padding for better alignment
+        item.innerHTML = `
+            <div class="absolute top-1 w-5 h-5 bg-amber-400 rounded-full -left-2.5 border-4 border-gray-900"></div>
+            <p class="text-amber-400 text-sm font-medium">${exp.date}</p>
+            <h3 class="text-xl font-semibold text-white">${exp.role}</h3>
+            <p class="text-lg text-gray-400 mb-2">${exp.company}</p>
+            ${exp.description ? `<ul class="list-disc list-inside text-gray-400 space-y-1 text-sm">${exp.description.map(d => `<li>${d}</li>`).join('')}</ul>` : ''}
+        `;
+        experienceContainer.appendChild(item);
+        observer.observe(item);
+    });
+
+    const certsContainer = document.getElementById('certs-container');
+    certifications.forEach(cert => {
+        const certEl = cert.url
+            ? `<a href="${cert.url}" target="_blank" class="glass-pane px-4 py-2 rounded-lg text-gray-200 hover:text-amber-400 hover:border-amber-400 transition">${cert.name}</a>`
+            : `<span class="glass-pane px-4 py-2 rounded-lg text-gray-200">${cert.name}</span>`;
+        certsContainer.innerHTML += certEl;
+    });
+
+    const nexusDiagram = document.getElementById('nexus-diagram');
+    const nodes = nexusDiagram.querySelectorAll('.nexus-node');
+    const tooltip = document.getElementById('nexus-tooltip');
+
+    nodes.forEach(node => {
+        node.addEventListener('mouseenter', e => {
+            const skillData = JSON.parse(e.currentTarget.dataset.skill);
+            tooltip.innerHTML = `<h4 class="font-bold text-amber-400 mb-1">${skillData.title}</h4><p class="text-sm text-gray-300">${skillData.tools}</p>`;
+            const nodeRect = e.currentTarget.getBoundingClientRect();
+            const diagramRect = nexusDiagram.getBoundingClientRect();
+            
+            tooltip.style.opacity = '1';
+            let top = nodeRect.top - diagramRect.top - tooltip.offsetHeight - 10;
+            let left = nodeRect.left - diagramRect.left + (nodeRect.width / 2) - (tooltip.offsetWidth / 2);
+            
+            tooltip.style.transform = `translate(${left}px, ${top}px)`;
+        });
+        node.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+        });
+    });
+
+    function renderChart(canvasId, project) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        if (window.chartInstances && window.chartInstances[canvasId]) {
+            window.chartInstances[canvasId].destroy();
+        }
+        
+        let config;
+        if (project.chartType === 'radar') {
+            config = getRadarConfig(project);
+        } else if (project.chartType === 'bar') {
+            config = getBarConfig(project);
+        } else if (project.chartType === 'gauge') {
+            config = getGaugeConfig(project);
+        }
+
+        if (!window.chartInstances) window.chartInstances = {};
+        window.chartInstances[canvasId] = new Chart(ctx, config);
+    }
+
+    const chartDefaults = {
+        color: 'rgba(201, 209, 217, 0.7)',
+        font: { family: "'Inter', sans-serif" }
+    };
+
+    function getRadarConfig(project) {
+        return {
+            type: 'radar',
+            data: {
+                labels: project.metrics.map(m => m.label),
+                datasets: [{
+                    label: 'Impact Score',
+                    data: project.metrics.map(m => m.value),
+                    backgroundColor: 'rgba(251, 191, 36, 0.2)',
+                    borderColor: 'rgba(251, 191, 36, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(251, 191, 36, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(251, 191, 36, 1)'
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { r: { angleLines: { color: 'rgba(201, 209, 217, 0.2)' }, grid: { color: 'rgba(201, 209, 217, 0.2)' }, pointLabels: { color: chartDefaults.color, font: chartDefaults.font }, ticks: { display: false, backdropColor: 'transparent' } } },
+                plugins: { legend: { display: false } }
+            }
+        };
+    }
+    
+    function getBarConfig(project) {
+        return {
+            type: 'bar',
+            data: {
+                labels: [project.metricLabel],
+                datasets: [
+                    { label: 'Before', data: [project.metrics[0].value], backgroundColor: '#4b5563', borderRadius: 4 },
+                    { label: 'After', data: [project.metrics[1].value], backgroundColor: '#3b82f6', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                scales: { x: { grid: { color: 'rgba(201, 209, 217, 0.2)' }, ticks: { color: chartDefaults.color, font: chartDefaults.font } }, y: { grid: { display: false }, ticks: { color: chartDefaults.color, font: chartDefaults.font } } },
+                plugins: { legend: { labels: { color: chartDefaults.color } } }
+            }
+        };
+    }
+
+    function getGaugeConfig(project) {
+        return {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [project.metric, 100 - project.metric],
+                    backgroundColor: ['#10B981', 'rgba(201, 209, 217, 0.2)'],
+                    borderColor: '#0d1117',
+                    borderWidth: 4,
+                    borderRadius: 5,
+                    circumference: 180,
+                    rotation: 270,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '80%',
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                animation: { animateScale: true, animateRotate: true }
+            },
+            plugins: [{
+                id: 'gaugeLabel',
+                beforeDraw: (chart) => {
+                    const { width, height, ctx } = chart;
+                    ctx.save();
+                    
+                    const percentageFontSize = height / 5;
+                    ctx.font = `800 ${percentageFontSize}px Inter, sans-serif`;
+                    ctx.fillStyle = '#10B981';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const percentageText = `${project.metric}%`;
+                    const percentageY = height * 0.70;
+                    ctx.fillText(percentageText, width / 2, percentageY);
+
+                    const labelFontSize = height / 22;
+                    ctx.font = `500 ${labelFontSize}px Inter, sans-serif`;
+                    ctx.fillStyle = '#c9d1d9';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    const labelText = project.metricLabel;
+                    const labelY = percentageY + (percentageFontSize * 0.5) + 5; 
+                    ctx.fillText(labelText, width / 2, labelY);
+
+                    ctx.restore();
+                }
+            }]
+        };
+    }
+
+});
+</script>
+
+</body>
+</html>
